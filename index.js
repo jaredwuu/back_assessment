@@ -7,7 +7,9 @@ const route2 = require('./routes/route2')
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
+const apicache = require('apicache-plus');
 
+app.use(apicache('10 minutes'))
 
 app.get('/posts', async (req, res) => {
     const tag = req.query.tag;
