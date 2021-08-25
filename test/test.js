@@ -3,6 +3,26 @@ const request = require('request');
 const axios = require('axios');
 
 describe('Back-End Challenge', function () {
+  describe('Test /posts', function () {
+    it('Should return the correct body for Test posts', function (done) {
+      request('http://localhost:5000/posts', function (error, response, body) {
+        expect(body).to.equal('{"error":"Tags parameter is required"}');
+        done();
+      });
+    });
+    it('Should return the correct status code for Test api/ping where route is correct', function (done) {
+      request('http://localhost:5000/posts?tag=tech', function (error, response, body) {
+        expect(response.statusCode).to.equal(200);
+        done();
+      });
+    });
+    it('Should return the correct status code for Test api/ping where route is correct', function (done) {
+      request('http://localhost:5000/posts', function (error, response, body) {
+        expect(response.statusCode).to.equal(400);
+        done();
+      });
+    });
+  })
   describe('Test api/ping', function () {
     it('Should return the correct body for Test api/ping', function (done) {
       request('http://localhost:5000/api/ping', function (error, response, body) {
@@ -117,7 +137,7 @@ describe('Back-End Challenge', function () {
           postID.forEach(blog => {
             postObj[blog] = postObj[blog] ? postObj[blog] + 1 : 1
           })
-         
+
           for (let key in postObj) {
             if (postObj[key] > 1) {
               test = false
@@ -136,11 +156,11 @@ describe('Back-End Challenge', function () {
           let post = res.data;
           let postLikes = [];
           let test = true;
-         
+
           for (let i = 0; i < post.length; i++) {
             postLikes.push(post[i].likes)
           }
-         
+
           for (let i = 0; i < postLikes.length; i++) {
             if (postLikes[i] < postLikes[i + 1]) {
               test = false;
@@ -159,11 +179,11 @@ describe('Back-End Challenge', function () {
           let post = res.data;
           let postReads = [];
           let test = true;
-          
+
           for (let i = 0; i < post.length; i++) {
             postReads.push(post[i].reads)
           }
-          
+
           for (let i = 0; i < postReads.length; i++) {
             if (postReads[i] < postReads[i + 1]) {
               test = false;
@@ -182,11 +202,11 @@ describe('Back-End Challenge', function () {
           let post = res.data;
           let postID = [];
           let test = true;
-         
+
           for (let i = 0; i < post.length; i++) {
             postID.push(post[i].id)
           }
-         
+
           for (let i = 0; i < postID.length; i++) {
             if (postID[i] > postID[i + 1]) {
               test = false;
