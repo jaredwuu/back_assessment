@@ -3,10 +3,13 @@ const axios = require('axios')
 
 const router = express.Router();
 
+function getUniqueListBy(arr, key) {
+    return [...new Map(arr.map(item => [item[key], item])).values()]
+}
 
 //GET posts/
 router.get('/', async (req, res) => {
-    let data ,temData;
+    let data ,temData,temPosts;
     let searchTag, arr;
     let sortBy, direction;
     let sortInvalid;
@@ -16,24 +19,29 @@ router.get('/', async (req, res) => {
 
     if (searchTag) {
         arr = searchTag.split(',');
-    }
-
-
-    try {
         const url = `https://api.hatchways.io/assessment/blog/posts?tag=${arr[0]}`
-        const resp = await axios.get(url)        
+        const resp = await axios.get(url)
+        temData = resp.data
         data = resp.data
+        temPosts = temData.posts
+        for(let i = 1; i < arr.length; i++) {
+            const url = `https://api.hatchways.io/assessment/blog/posts?tag=${arr[i]}`
+            const resp = await axios.get(url)
+            temData = resp.data
+            temPosts = temPosts.concat(temData.posts)
+        }
 
-    } catch (e) {
-        res.status(400).json(
-            {
-                "error": "Tags parameter is required"
-            }
-
-        )
+        data.posts =temPosts
+        // data.posts = temPosts.filter(function (value, index, array) {
+        //     return array.indexOf(value) === index;
+        // });
+        data.posts = getUniqueListBy(data.posts,'id')
+        // const unique = [...new Map(temPosts.map(item => [item['id'], item])).values()]
+        // console.log(unique.length)
+        //console.log(data.posts[1]===console.log(data.posts[2]))
+        console.log(data.posts.length)        
+       
     }
-    console.log(data.posts.concat([1]))
-
 
     switch (sortBy) {
 
